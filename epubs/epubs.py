@@ -119,7 +119,11 @@ def main(config):
             
             else:
                 logging.debug(f'using source dialect "{dialect}"')
-                xml = dialect.transform(text, src_file.name)
+                try:
+                    xml = dialect.transform(text, src_file.name)
+                except Exception as e:
+                    logging.warning(f'Exception while processing "{src_file.name}":')
+                    raise e
                 write_results(xml, config.results_path, src_file.name)
 
 
