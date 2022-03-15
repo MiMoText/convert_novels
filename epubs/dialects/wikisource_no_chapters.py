@@ -1,7 +1,6 @@
-import re
-from itertools import takewhile
-
+from aux import takewhile_incl, dropwhile_excl
 from .base import EpubBaseDialect
+
 
 
 class WikisourceNCEpubDialect(EpubBaseDialect):
@@ -15,7 +14,7 @@ class WikisourceNCEpubDialect(EpubBaseDialect):
     `split_chapters()` method. 
     '''
 
-    def split_titlepage(self, text):
+    """     def split_titlepage(self, text):
         '''Split on the second occurence of "## ".'''
         # How to recognize the end of the titlepage
         marker = '(^|\n)## '
@@ -27,5 +26,17 @@ class WikisourceNCEpubDialect(EpubBaseDialect):
         end_of_titlepage, _end_of_match = re.search(marker, text[end:]).span()
         titlepage, rest = text[:end_of_titlepage+end+1], text[end_of_titlepage+end+1:]
         rest += '\n'
+
+        return titlepage, rest """
+    
+    def split_titlepage(self, text):
+        '''Split after "###### Exporté de Wikisource".'''
+        marker = '###### Exporté de Wikisource'
+        
+        titlepage_lines = takewhile_incl(lambda l: not l.startswith(marker), text.splitlines())
+        titlepage = '\n'.join(titlepage_lines) + '\n'
+
+        rest_lines = dropwhile_excl(lambda l: not l.startswith(marker), text.splitlines())
+        rest = '\n'.join(rest_lines) + '\n'
 
         return titlepage, rest
