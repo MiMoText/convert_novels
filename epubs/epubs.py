@@ -88,14 +88,14 @@ def dialect_arg(string):
         return None
     try:
         EpubDialects[string]
+        return string
+    except KeyError:
         msg = '\n'.join((
             f'the requested source dialect {string} does not exist.',
             'Valid options are:',
             '\n'.join([d.name for d in EpubDialects])
         ))
         logging.warning(msg)
-        return string
-    except KeyError:
         return None
 
 
