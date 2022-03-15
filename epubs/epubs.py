@@ -103,7 +103,9 @@ def main(config):
     source = Path(config.source_path)
     files = [source] if source.is_file() else source.iterdir()
 
-    prepare(config.results_path)
+    # Ensure that configured SAVE_PATH exists, unless we are only in a dry-run.
+    if not config.only_probe_dialect:
+        prepare(config.results_path)
 
     for src_file in files:
         if src_file.is_file() and src_file.name.endswith('.txt'):
