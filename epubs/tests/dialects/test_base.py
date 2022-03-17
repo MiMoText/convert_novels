@@ -3,7 +3,7 @@ Test suite for the conversion of markdown documents, which
 have been generated from epub editions, into TEI XML.
 """
 
-from unittest import TestCase, skip
+from unittest import TestCase
 
 import lxml.etree as ET
 

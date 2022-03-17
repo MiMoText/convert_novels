@@ -215,20 +215,6 @@ class EpubBaseDialect:
         node = insert_markup(node, ET.Element('hi', attrib={'rend': 'italic'}), italic)
         return node
 
-    """
-    def insert_heading_xml(self, node):
-        '''Given a div node, insert a head node.'''
-        pattern = r'(^## .*\n)'
-        node = insert_markup(node, ET.Element('head', attrib={'type': 'chapter'}), pattern)
-        return node
-
-
-    def insert_paragraph_xml(self, node):
-        '''Given a div node, insert a new paragraph.'''
-        pattern = r'(^.*$)'
-        node = insert_markup(node, ET.Element('p'), pattern)
-        return node
-    """
 
     def parse_footnotes(self, text, fn_offset=0):
         '''Given a string, identify footnotes and replace their markers.

@@ -1,4 +1,3 @@
-from itertools import dropwhile, takewhile
 import re
 
 from .base import EpubBaseDialect
@@ -29,12 +28,6 @@ class RousseauEpubDialect(EpubBaseDialect):
         The metadata section looks exactly like page number markers,
         except that it also includes non-numeric characters.
         '''
-        # E.g. \[various characters, but at least one non-numeric\]
-        def is_marker(line):
-            if line.startswith('\['):
-                return any([c for c in line if not c.isnumeric()])
-            return False
-        # pattern = r'\\\[(.*?\D+.*?)\\\]\n'
         tp = []
         rest = []
         found_marker = False
