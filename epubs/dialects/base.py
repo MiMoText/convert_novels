@@ -160,8 +160,7 @@ class EpubBaseDialect:
     def clean_up(self, text):
         '''Delete and/or replace unnecessary text artifacts.'''
         text = (
-            text.replace('&', '&amp;')
-                .replace('\!', '')
+            text.replace('\!', '')
                 .replace('\*', '*')
                 .replace('* * *', '')
                 .replace('\(', '(')

@@ -24,6 +24,17 @@ class EpubCleanupTest(EpubBaseTest):
         expected = 'A line\nAnother line'
         results = self.d.clean_up(text)
         self.assertEqual(results, expected)
+    
+    def test_donot_clean_up_amps(self):
+        '''"&" should not be transformed to "&amp;".
+        
+        This is not intuitive, but lxml handles both the initial parsing and
+        the serialization at the end for us. So, doing a manual replacement
+        would in fact lead to double amps: "&amp;amp;".
+        '''
+        text = 'A line with &.\nAnd one without.'
+        results = self.d.clean_up(text)
+        self.assertEqual(results, text)
 
 
 class EpubSplittingTest(EpubBaseTest):
