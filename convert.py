@@ -18,7 +18,7 @@ RESULTS_PATH = 'results/'
 # Force usage of a specific epub source dialect.
 # If set to something other than None it skips the auto-detection of the most
 # appropriate dialect.
-# Valid values are: 'BASE', 'ROUSSEAU', 'WIKISOURCE', 'WIKISOURCE_NC' and None
+# Valid values are: 'EPUBBASE', 'ROUSSEAU', 'WIKISOURCE', 'WIKISOURCE_NC' and None
 FORCE_DIALECT = None
 # Whether to print low-level debug messages
 VERBOSE = False
@@ -47,7 +47,7 @@ def determine_dialect(text, force_dialect=None):
                 Dialect = EpubDialects['WIKISOURCE_NC']
         if Dialect is None:
             logging.warning('could not recognize a known source dialect')
-            Dialect = EpubDialects['BASE']
+            Dialect = EpubDialects['EPUBBASE']
 
     return Dialect.value()
 

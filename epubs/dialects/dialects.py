@@ -7,7 +7,7 @@ from .wikisource_no_chapters import WikisourceNCEpubDialect
 
 
 class EpubDialects(Enum):
-    BASE = EpubBaseDialect
+    EPUBBASE = EpubBaseDialect
     ROUSSEAU = RousseauEpubDialect
     WIKISOURCE = WikisourceEpubDialect
     WIKISOURCE_NC = WikisourceNCEpubDialect
