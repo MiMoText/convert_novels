@@ -156,7 +156,7 @@ if __name__ == '__main__':
         help='wether to display low-level debugging messages'
     )
     parser.add_argument(
-        '--only-probe-dialect',
+        '-p', '--only-probe-dialect',
         action='store_true',
         help='if used, only check which dialects would be used'
     )
