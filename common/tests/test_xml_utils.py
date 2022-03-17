@@ -2,7 +2,7 @@ from unittest import TestCase, skip
 
 import lxml.etree as ET
 
-from xml_utils import insert_markup
+from common.xml_utils import insert_markup
 
 
 class InsertMarkupTextTest(TestCase):

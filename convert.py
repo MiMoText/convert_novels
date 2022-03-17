@@ -9,7 +9,7 @@ from pathlib import Path
 
 import lxml.etree as ET
 
-from dialects.dialects import EpubDialects
+from epubs.dialects.dialects import EpubDialects
 
 # set a path where your data are saved
 SOURCE_PATH = 'sources/'

@@ -4,8 +4,8 @@ Tests concerning the main `epubs.py` file.
 
 from unittest import TestCase
 
-from dialects.dialects import EpubDialects
-from epubs import determine_dialect
+from ..dialects.dialects import EpubDialects
+from convert import determine_dialect
 
 
 class EpubDialectTest(TestCase):

@@ -6,7 +6,7 @@ import re
 import lxml.etree as ET
 from lxml.etree import QName
 
-from xml_utils import insert_markup
+from common.xml_utils import insert_markup
 
 
 class EpubBaseDialect:
