@@ -80,7 +80,7 @@ def write_results(xml, save_path, file_name):
     
     # Pretty-print the xml.
     ET.indent(xml)
-    xml.write(p, encoding='utf-8')
+    xml.write(p, encoding='utf-8', xml_declaration=True)
 
 
 def dialect_arg(string):
