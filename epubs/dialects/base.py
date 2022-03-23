@@ -1,11 +1,10 @@
-from datetime import date
 from itertools import takewhile
-from pathlib import Path
 import re
 
 import lxml.etree as ET
 from lxml.etree import QName
 
+from common.xml_header import build_header_xml
 from common.xml_utils import insert_markup
 
 
@@ -49,6 +48,9 @@ class EpubBaseDialect:
         tree = ET.ElementTree(tei)
         return tree
 
+    # ********************************************************************************
+    # Overwrite the following methods in your custom dialect.
+    # ********************************************************************************
 
     def build_back_xml(self, footnotes):
         '''Create notes in a back section at the end of the document.
@@ -132,29 +134,7 @@ class EpubBaseDialect:
 
     def build_header_xml(self, root=None, metadata={}, file_name='TODO'):
         '''Build an xml tree with teiHeader from a text template.'''
-        nsmap = self.__class__.NAMESPACES
-        templ_path = Path(__file__).resolve()
-        templ_path = templ_path.parent / '..' / 'templates' / 'teiHeader-Template.xml'
-        parser = ET.XMLParser(remove_blank_text=True)
-        xml = ET.parse(str(templ_path), parser)
-
-        # Pre-fill some known values.
-        today = date.today().isoformat()
-        xml_id = file_name
-        tei = xml.getroot()
-        tei.attrib[QName(nsmap.get('xml'), 'id')] = xml_id
-
-        change_path = f"//{ET.QName(nsmap.get('tei'), 'revisionDesc')}/{ET.QName(nsmap.get('tei'), 'change')}"
-        change = xml.find(change_path)
-        change.attrib['when'] = today
-
-        if metadata != {}:
-            raise NotImplementedError('Auto-fill-in of metadata is not yet supported – sorry!')
-
-        if root is not None:
-            root.insert(0, xml)
-            return root
-        return xml
+        return build_header_xml(root, metadata, file_name)
 
 
     def clean_up(self, text):
