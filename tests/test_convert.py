@@ -9,9 +9,31 @@ from html.dialects.dialects import HTMLDialects
 from convert import determine_dialect
 
 
+class HTMLDialectTest(TestCase):
+    '''HTML dialect detection tests.'''
+
+    def test_detect_hub18cfrench(self):
+        '''Ensure that HTML sources from hub18cfrench are detected.'''
+        text = '''<div class="xml-div1">
+            <p>some content</p>
+        </div>'''
+        expected = HTMLDialects['HUB18CFRENCH'].value
+        results = determine_dialect(text)
+        self.assertIsInstance(results, expected)
+
+    def test_enforce_dialect(self):
+        '''When enforcing usage of a dialect, make sure it is actually used.'''
+        text = 'irrelevant dummy test text'
+        ds = (
+            ('HUB18CFRENCH', HTMLDialects['HUB18CFRENCH'].value),
+        )
+        for forced, expected in ds:
+            results = determine_dialect(text, forced)
+            self.assertIsInstance(results, expected)
+
+
 class EpubDialectTest(TestCase):
     '''Epub dialect detection tests.'''
-
 
     def test_detect_rousseauonline(self):
         '''Ensure sources from rousseauonline.ch are detected correctly.'''

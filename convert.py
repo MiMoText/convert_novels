@@ -10,6 +10,7 @@ from pathlib import Path
 import lxml.etree as ET
 
 from epubs.dialects.dialects import EpubDialects
+from html.dialects.dialects import HTMLDialects
 
 # set a path where your data are saved
 SOURCE_PATH = 'sources/'
@@ -18,7 +19,8 @@ RESULTS_PATH = 'results/'
 # Force usage of a specific epub source dialect.
 # If set to something other than None it skips the auto-detection of the most
 # appropriate dialect.
-# Valid values are: 'EPUBBASE', 'ROUSSEAU', 'WIKISOURCE', 'WIKISOURCE_NC' and None
+# Valid values are: 'EPUBBASE', 'ROUSSEAU', 'WIKISOURCE', 'WIKISOURCE_NC',
+#                   'HUB18CFRENCH' and None
 FORCE_DIALECT = None
 # Whether to print low-level debug messages
 VERBOSE = False
@@ -33,10 +35,15 @@ NSMAP = {
 def determine_dialect(text, force_dialect=None):
     '''Factory function which parses the text and returns a appropriate dialect object.'''
     # If `force_dialect` is given, skip auto-detection.
+    Dialect = None
     if force_dialect is not None and force_dialect != '':
-        Dialect = EpubDialects[force_dialect]
+        if hasattr(EpubDialects, force_dialect):
+            Dialect = EpubDialects[force_dialect]
+        elif hasattr(HTMLDialects, force_dialect):
+            Dialect = HTMLDialects[force_dialect]
+        else:
+            raise RuntimeError(f'unknown forced dialect "{force_dialect}"!')
     else:
-        Dialect = None
         if 'www.rousseauonline.ch' in text:
             Dialect = EpubDialects['ROUSSEAU']
         elif 'Exporté de Wikisource' in text:
@@ -45,6 +52,9 @@ def determine_dialect(text, force_dialect=None):
                 Dialect = EpubDialects['WIKISOURCE']
             else:
                 Dialect = EpubDialects['WIKISOURCE_NC']
+        elif '<div class="xml-div1">' in text:
+            Dialect = HTMLDialects['HUB18CFRENCH']
+
         if Dialect is None:
             logging.warning('could not recognize a known source dialect')
             Dialect = EpubDialects['EPUBBASE']
@@ -90,13 +100,17 @@ def dialect_arg(string):
         EpubDialects[string]
         return string
     except KeyError:
-        msg = '\n'.join((
-            f'the requested source dialect {string} does not exist.',
-            'Valid options are:',
-            '\n'.join([d.name for d in EpubDialects])
-        ))
-        logging.warning(msg)
-        return None
+        try:
+            HTMLDialects[string]
+            return string
+        except KeyError:
+            msg = '\n'.join((
+                f'the requested source dialect {string} does not exist.',
+                'Valid options are:',
+                '\n'.join([d.name for d in EpubDialects])
+            ))
+            logging.warning(msg)
+            return None
 
 
 def main(config):
@@ -108,7 +122,8 @@ def main(config):
         prepare(config.results_path)
 
     for src_file in files:
-        if src_file.is_file() and src_file.name.endswith('.txt'):
+        if src_file.is_file() and (src_file.name.endswith('.txt')
+                                or src_file.name.endswith('.html')):
             logging.debug(f'Processing {src_file}')
             text = open_file(src_file)
             dialect = determine_dialect(text, config.force_dialect)
