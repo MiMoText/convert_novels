@@ -32,6 +32,7 @@ class HTMLBaseDialect:
         # Perform some kind of preprocessing on the raw string.
         text = self.clean_up(text)
         html = ET.parse(StringIO(text), HTMLParser())
+        html = html.getroot()
         
         name = filename.removesuffix('.html')
         xml = self.build_header_xml(file_name=name)
@@ -94,7 +95,7 @@ class HTMLBaseDialect:
         body = ET.Element('body')
         for chapter in chapters_xml_list:
             body.append(chapter)
-        return body, None
+        return body
 
 
     def build_chapter_xml(self, chapter_source):
@@ -196,8 +197,8 @@ class HTMLBaseDialect:
     def _replace_bold(self, elem):
         '''Replace b tag with appropriate XML.'''
         elem.tag = 'hi'
-        elem.attrib = {}
-        elem.attrib['rend'] = 'bold'
+        elem.attrib.clear()
+        elem.set('rend', 'bold')
         return elem
     
 
@@ -205,7 +206,7 @@ class HTMLBaseDialect:
         '''Replace span tag with small caps with appropriate XML.'''
         elem.tag = 'hi'
         elem.attrib.clear()
-        elem.attrib['rend'] = 'caps'
+        elem.set('rend', 'caps')
         return elem
 
 
@@ -213,4 +214,4 @@ class HTMLBaseDialect:
         '''Replace i tag with appropriate XML.'''
         elem.tag = 'hi'
         elem.attrib.clear()
-        elem.attrib['rend'] = 'italic'
+        elem.set('rend', 'italic')
