@@ -83,6 +83,7 @@ def prepare(save_path):
 def write_results(xml, save_path, file_name):
     """Write results to configured `SAVE_PATH`."""
     name = file_name.replace('.txt', '.xml')
+    name = name.replace('.html', '.xml')
     p = Path(save_path) / name
     p = str(p.absolute())
     
