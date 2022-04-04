@@ -189,9 +189,13 @@ class HTMLBaseDialect:
             self._replace_italics(node)
         elif node.tag == 'span' and node.attrib['class'] == 'small-caps':
             self._replace_small_caps(node)
+        elif node.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            self._replace_h(node)
         
         for child in node.getchildren():
             self._replace(child)
+        
+        return node
     
 
     def _replace_bold(self, elem):
@@ -201,6 +205,13 @@ class HTMLBaseDialect:
         elem.set('rend', 'bold')
         return elem
     
+
+    def _replace_h(self, elem):
+        '''Replace h1, h2 etc with appropriate XML tags.'''
+        elem.tag = 'head'
+        elem.attrib.clear()
+        return elem
+
 
     def _replace_small_caps(self, elem):
         '''Replace span tag with small caps with appropriate XML.'''
