@@ -8,6 +8,29 @@ from .base import HTMLBaseDialect
 class Hub18CFrenchDialect(HTMLBaseDialect):
     '''Dialect for source documents from hub18thcfrench.'''
 
+    def build_chapter_xml(self, chapter_source):
+        '''Generate chapter div with appropriate markup from HTML source.
+        
+        This expects a single div node as source. It replaces standard
+        markup by its XML equivalent and also implements special treatment
+        for chapter headings.
+        '''
+        # Remove existing class attr and add type attr.
+        chapter_source.attrib.clear()
+        chapter_source.set('type', 'chapter')
+
+        # Check for chapter heading.
+        fst = chapter_source.getchildren()[0]
+        if fst.tag == 'b' and fst.get('class') == 'headword':
+            fst_copy = copy(fst)
+            xml = self._replace_headings(fst_copy)
+            chapter_source.replace(fst, xml)
+
+        # Replace all the HTML tags with corresponding TEI XML ones.
+        self._replace(chapter_source)
+        return chapter_source
+
+
     def build_front_xml(self, titlepage):
         '''Build a TEI XML front from a div element with all the needed content.'''
         titlepage.attrib.clear()
@@ -36,11 +59,16 @@ class Hub18CFrenchDialect(HTMLBaseDialect):
         unfortunately not preserved in the HTML source.  
         '''
         text = super().clean_up(text)
+        # Pattern to match page breaks
         pb_pattern = r'<span.*?class="xml-pb-image".*?</span>'
         text = re.sub(pb_pattern, '', text)
+        # Pattern to match footnotes
         fn_pattern = r'<span.*?type="note".*?</span>'
         # Note the necessity of re.DOTALL to make the . match newlines as well.
         text = re.sub(fn_pattern, '', text, flags=re.DOTALL)
+        # Pattern to match centered text
+        cnt_pattern = r'<span class="xml-center">(.*?)</span>'
+        text = re.sub(cnt_pattern, '\g<1>', text, flags=re.DOTALL)
 
         return text
 

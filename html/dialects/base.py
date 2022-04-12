@@ -191,6 +191,8 @@ class HTMLBaseDialect:
             self._replace_small_caps(node)
         elif node.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
             self._replace_h(node)
+        elif node.tag == 'span' and node.attrib['class'] == 'xml-q':
+            self._replace_q(node)
         
         for child in node.getchildren():
             self._replace(child)
@@ -210,6 +212,20 @@ class HTMLBaseDialect:
         '''Replace h1, h2 etc with appropriate XML tags.'''
         elem.tag = 'head'
         elem.attrib.clear()
+        return elem
+
+
+    def _replace_q(self, elem):
+        '''Replace span with class "xml-q" with q tags.
+        
+        Note that eltec-x does not allow that (TEI does), but I don't know what
+        a proper alternative would be.
+        '''
+        parent = elem.getparent()
+        elem_copy = copy(elem)
+        elem_copy.tag = 'q'
+        elem_copy.attrib.clear()
+        parent.replace(elem, elem_copy)
         return elem
 
 
