@@ -5,6 +5,7 @@ import logging
 import lxml.etree as ET
 from lxml.etree import HTMLParser
 
+from common.aux import remove_suffix
 from common.xml_header import build_header_xml
 
 
@@ -34,7 +35,7 @@ class HTMLBaseDialect:
         html = ET.parse(StringIO(text), HTMLParser())
         html = html.getroot()
         
-        name = filename.removesuffix('.html')
+        name = remove_suffix(filename, '.html')
         xml = self.build_header_xml(file_name=name)
         tei = xml.getroot()
 

@@ -1,6 +1,14 @@
 '''Generic helper functions.'''
 
 
+def remove_suffix(string, suffix):
+    '''Like `str.removesuffix` for python versions < 3.9.'''
+    if suffix and string.endswith(suffix):
+        return string[:-len(suffix)]
+    else:
+        return string
+
+
 def takewhile_incl(predicate, iterable):
     '''Just like `takewhile` from `itertools`, but includes the
     first item for which the predicate is False.

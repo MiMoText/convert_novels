@@ -4,6 +4,7 @@ import re
 import lxml.etree as ET
 from lxml.etree import QName
 
+from common.aux import remove_suffix
 from common.xml_header import build_header_xml
 from common.xml_utils import insert_markup
 
@@ -27,7 +28,7 @@ class EpubBaseDialect:
         subclassing this class and overriding one or more of its other methods.
         '''
         text = self.clean_up(text)
-        name = filename.removesuffix('.txt')
+        name = remove_suffix(filename, '.txt')
         xml = self.build_header_xml(file_name=name)
         tei = xml.getroot()
         
