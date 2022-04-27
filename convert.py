@@ -9,8 +9,7 @@ from pathlib import Path
 
 import lxml.etree as ET
 
-from epubs.dialects.dialects import EpubDialects
-from html.dialects.dialects import HTMLDialects
+from dialects.dialects import SourceDialects
 
 # set a path where your data are saved
 SOURCE_PATH = 'sources/'
@@ -37,27 +36,25 @@ def determine_dialect(text, force_dialect=None):
     # If `force_dialect` is given, skip auto-detection.
     Dialect = None
     if force_dialect is not None and force_dialect != '':
-        if hasattr(EpubDialects, force_dialect):
-            Dialect = EpubDialects[force_dialect]
-        elif hasattr(HTMLDialects, force_dialect):
-            Dialect = HTMLDialects[force_dialect]
+        if hasattr(SourceDialects, force_dialect):
+            Dialect = SourceDialects[force_dialect]
         else:
             raise RuntimeError(f'unknown forced dialect "{force_dialect}"!')
     else:
         if 'www.rousseauonline.ch' in text:
-            Dialect = EpubDialects['ROUSSEAU']
+            Dialect = SourceDialects['ROUSSEAU']
         elif 'Exporté de Wikisource' in text:
             # Determine whether there are chapters or not.
             if text.count('\n### ') > 1:
-                Dialect = EpubDialects['WIKISOURCE']
+                Dialect = SourceDialects['WIKISOURCE']
             else:
-                Dialect = EpubDialects['WIKISOURCE_NC']
+                Dialect = SourceDialects['WIKISOURCE_NC']
         elif '<div class="xml-div1">' in text:
-            Dialect = HTMLDialects['HUB18CFRENCH']
+            Dialect = SourceDialects['HUB18CFRENCH']
 
         if Dialect is None:
             logging.warning('could not recognize a known source dialect')
-            Dialect = EpubDialects['EPUBBASE']
+            Dialect = SourceDialects['EPUBBASE']
 
     return Dialect.value()
 

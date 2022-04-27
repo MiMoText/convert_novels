@@ -7,7 +7,7 @@ from unittest import TestCase
 
 import lxml.etree as ET
 
-from epubs.dialects.base import EpubBaseDialect
+from dialects.epubs.base import EpubBaseDialect
 
 
 class EpubBaseTest(TestCase):

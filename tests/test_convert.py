@@ -4,8 +4,7 @@ Tests concerning the main `epubs.py` file.
 
 from unittest import TestCase
 
-from epubs.dialects.dialects import EpubDialects
-from html.dialects.dialects import HTMLDialects
+from dialects.dialects import SourceDialects
 from convert import determine_dialect
 
 
@@ -17,7 +16,7 @@ class HTMLDialectTest(TestCase):
         text = '''<div class="xml-div1">
             <p>some content</p>
         </div>'''
-        expected = HTMLDialects['HUB18CFRENCH'].value
+        expected = SourceDialects['HUB18CFRENCH'].value
         results = determine_dialect(text)
         self.assertIsInstance(results, expected)
 
@@ -25,7 +24,7 @@ class HTMLDialectTest(TestCase):
         '''When enforcing usage of a dialect, make sure it is actually used.'''
         text = 'irrelevant dummy test text'
         ds = (
-            ('HUB18CFRENCH', HTMLDialects['HUB18CFRENCH'].value),
+            ('HUB18CFRENCH', SourceDialects['HUB18CFRENCH'].value),
         )
         for forced, expected in ds:
             results = determine_dialect(text, forced)
@@ -50,7 +49,7 @@ JEAN JACQUES ROUSSEAU
 
 Il y avoit autrefois un Roi qui aimoit son peuple...
         '''
-        expected = EpubDialects['ROUSSEAU'].value
+        expected = SourceDialects['ROUSSEAU'].value
         results = determine_dialect(text)
         self.assertIsInstance(results, expected)
     
@@ -72,7 +71,7 @@ LES LETTRES D'AMABED
 
 D'AMABED À SHASTASID, GRAND BRAME DE MADURÉ.
 '''
-        expected = EpubDialects['WIKISOURCE'].value
+        expected = SourceDialects['WIKISOURCE'].value
         results = determine_dialect(text)
         self.assertIsInstance(results, expected)
     
@@ -92,7 +91,7 @@ D'AMABED À SHASTASID, GRAND BRAME DE MADURÉ.
 
 Cette maison unique est sur les bords de la Seine. Une avenue, conduisant à une patte d’oie,
 '''
-        expected = EpubDialects['WIKISOURCE_NC'].value
+        expected = SourceDialects['WIKISOURCE_NC'].value
         results = determine_dialect(text)
         self.assertIsInstance(results, expected)
     
@@ -101,9 +100,9 @@ Cette maison unique est sur les bords de la Seine. Une avenue, conduisant à une
         '''When enforcing usage of a dialect, make sure it is actually used.'''
         text = 'test'
         ds = (
-            ('WIKISOURCE', EpubDialects['WIKISOURCE'].value),
-            ('WIKISOURCE_NC', EpubDialects['WIKISOURCE_NC'].value),
-            ('ROUSSEAU', EpubDialects['ROUSSEAU'].value),
+            ('WIKISOURCE', SourceDialects['WIKISOURCE'].value),
+            ('WIKISOURCE_NC', SourceDialects['WIKISOURCE_NC'].value),
+            ('ROUSSEAU', SourceDialects['ROUSSEAU'].value),
         )
         for forced, expected in ds:
             results = determine_dialect(text, forced)

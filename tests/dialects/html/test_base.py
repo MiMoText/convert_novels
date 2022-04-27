@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from html.dialects.base import HTMLBaseDialect
+from dialects.html.base import HTMLBaseDialect
 
 
 class HTMLBaseDialectTests(TestCase):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from epubs.dialects.wikisource_no_chapters import WikisourceNCEpubDialect 
+from dialects.epubs.wikisource_no_chapters import WikisourceNCEpubDialect 
 
 
 class EpubWikisourceNCTest(TestCase):

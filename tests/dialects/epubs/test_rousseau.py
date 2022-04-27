@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from epubs.dialects.rousseau import RousseauEpubDialect 
+from dialects.epubs.rousseau import RousseauEpubDialect 
 
 
 class EpubRousseauTest(TestCase):

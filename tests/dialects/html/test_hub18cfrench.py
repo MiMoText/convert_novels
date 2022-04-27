@@ -2,7 +2,7 @@ from unittest import TestCase, skip
 
 import lxml.etree as ET
 
-from html.dialects.hub18cfrench import Hub18CFrenchDialect
+from dialects.html.hub18cfrench import Hub18CFrenchDialect
 
 
 class Hub18CFrenchDialectTests(TestCase):
