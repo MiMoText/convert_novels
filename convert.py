@@ -49,12 +49,17 @@ def determine_dialect(text, force_dialect=None):
                 Dialect = SourceDialects['WIKISOURCE']
             else:
                 Dialect = SourceDialects['WIKISOURCE_NC']
-        elif '<div class="xml-div1">' in text:
-            Dialect = SourceDialects['HUB18CFRENCH']
+        elif 'class="xml-div1"' in text:
+            if 'class="xml-div0"' in text:
+                Dialect = SourceDialects['HUB18CFRENCH_A']
+            elif 'class="xml-div2"' in text:
+                Dialect = SourceDialects['HUB18CFRENCH_B']
+            else:
+                Dialect = SourceDialects['HUB18CFRENCH_C']
 
         if Dialect is None:
-            logging.warning('could not recognize a known source dialect')
-            Dialect = SourceDialects['EPUBBASE']
+            msg = 'could not recognize a known source dialect'
+            raise RuntimeError(msg)
 
     return Dialect.value()
 
@@ -95,20 +100,16 @@ def dialect_arg(string):
     if not string:
         return None
     try:
-        EpubDialects[string]
+        SourceDialects[string]
         return string
     except KeyError:
-        try:
-            HTMLDialects[string]
-            return string
-        except KeyError:
-            msg = '\n'.join((
-                f'the requested source dialect {string} does not exist.',
-                'Valid options are:',
-                '\n'.join([d.name for d in EpubDialects])
-            ))
-            logging.warning(msg)
-            return None
+        msg = '\n'.join((
+            f'the requested source dialect {string} does not exist.',
+            'Valid options are:',
+            '\n'.join([d.name for d in SourceDialects])
+        ))
+        logging.warning(msg)
+        return None
 
 
 def main(config):

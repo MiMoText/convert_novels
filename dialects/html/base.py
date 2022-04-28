@@ -188,6 +188,8 @@ class HTMLBaseDialect:
             self._replace_bold(node)
         elif node.tag == 'i':
             self._replace_italics(node)
+        elif node.tag == 'span' and node.attrib['class'] == 'xml-hi':
+            self._replace_italics(node)
         elif node.tag == 'span' and node.attrib['class'] == 'small-caps':
             self._replace_small_caps(node)
         elif node.tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
