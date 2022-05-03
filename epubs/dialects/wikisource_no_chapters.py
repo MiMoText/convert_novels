@@ -1,4 +1,4 @@
-from common.aux import takewhile_incl, dropwhile_excl
+from common.aux_file import takewhile_incl, dropwhile_excl
 from .base import EpubBaseDialect
 
 
