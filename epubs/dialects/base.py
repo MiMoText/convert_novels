@@ -4,7 +4,7 @@ import re
 import lxml.etree as ET
 from lxml.etree import QName
 
-from common.aux import remove_suffix
+from common.aux_file import remove_suffix
 from common.xml_header import build_header_xml
 from common.xml_utils import insert_markup
 
