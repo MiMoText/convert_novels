@@ -44,7 +44,10 @@ class HTMLBaseDialect:
             tp, rest = self.split_titlepage(html)
             chapters = self.split_chapters(rest)
         except IndexError as e:
+            tp = None
             front = None
+            rest = None
+            chapters = []
             msg = f'Source file "{filename}" has unexpected structure, conversion will likely fail!'
             logging.warning(msg)
         
@@ -122,6 +125,25 @@ class HTMLBaseDialect:
         return chapter_source
 
 
+    def build_front_xml(self, titlepage):
+        '''Build a TEI XML front from a div element with all the needed content.'''
+        front = ET.Element('front')
+
+        # If titlepage is empty, don't do anything.
+        try:
+            print(titlepage)
+            titlepage.attrib.clear()
+            titlepage.attrib['type'] = 'titlepage'
+
+            # Recursively replace HTML markup with appropriate XML (in place!).
+            self._replace(titlepage)
+            front.append(titlepage)
+        except:
+            logging.warning('no valid titlepage for this document')
+
+        return front
+
+
     def build_header_xml(self, root=None, metadata={}, file_name='TODO'):
         '''Create a TEI XML header section.
         
@@ -129,20 +151,6 @@ class HTMLBaseDialect:
         it can be generic across EPUB and HTML source documents.
         '''
         return build_header_xml(root, metadata, file_name)
-
-
-    def build_front_xml(self, titlepage):
-        '''Build a TEI XML front from a div element with all the needed content.'''
-        titlepage.attrib.clear()
-        titlepage.attrib['type'] = 'titlepage'
-
-        # Recursively replace HTML markup with appropriate XML (in place!).
-        self._replace(titlepage)
-
-        front = ET.Element('front')
-        front.append(titlepage)
-
-        return front
     
 
     def clean_up(self, text):

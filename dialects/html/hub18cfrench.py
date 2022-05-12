@@ -1,4 +1,5 @@
 from copy import copy, deepcopy
+import logging
 import re
 
 import lxml.etree as ET
@@ -24,7 +25,7 @@ class Hub18CFrenchDialectBase(HTMLBaseDialect):
             chapter_source.set('type', 'chapter')
             # Check for chapter heading.
             fst = chapter_source.getchildren()[0]
-            
+
         if fst.tag == 'b' and fst.get('class') == 'headword':
             fst_copy = copy(fst)
             xml = self._replace_headings(fst_copy)
@@ -37,22 +38,24 @@ class Hub18CFrenchDialectBase(HTMLBaseDialect):
 
     def build_front_xml(self, titlepage):
         '''Build a TEI XML front from a div element with all the needed content.'''
-        titlepage.attrib.clear()
-
-        # The Eltec schema prescribes that the linebreaks in our headings should be ignored
-        # as mere superficial artifacts of the printed editions. That is why we can not
-        # use the lb tags inside the wrapping hi tags which markup the text highlights.
-        head = titlepage.find('b')
-        if head:
-            head = self._replace_headings(head)
-        else:
-            head = ET.Element('p')
-            head.text = ET.tostring(titlepage, method='text')
-        
         front = ET.Element('front')
         tp = ET.SubElement(front, 'div', attrib={'type': 'titlepage'})
-        tp.append(head)
-        
+
+        try:
+            titlepage.attrib.clear()
+            # The Eltec schema prescribes that the linebreaks in our headings should be ignored
+            # as mere superficial artifacts of the printed editions. That is why we can not
+            # use the lb tags inside the wrapping hi tags which markup the text highlights.
+            head = titlepage.find('b')
+            if head:
+                head = self._replace_headings(head)
+            else:
+                head = ET.Element('p')
+                head.text = ET.tostring(titlepage, method='text')
+            tp.append(head)
+        except:
+            logging.warning('could not build valid titlepage for this document')
+
         # Recursively replace HTML markup with appropriate XML (in place!).
         self._replace(front)
 
@@ -165,7 +168,7 @@ class Hub18CFrenchDialectB(Hub18CFrenchDialectBase):
     
     def split_titlepage(self, html_source):
         '''Given the whole html tree, extract the content of the titlepage and the rest.'''
-        tp = html_source.cssselect('.xml-div1').getchildren()[0]
+        tp = html_source.cssselect('.xml-div1')[0].getchildren()[0]
         rest = ET.Element('span', attrib={'class': 'xml-div0'})
         chapters = html_source.cssselect('.xml-div1').getchildren()[1:]
         for chapter in chapters:
