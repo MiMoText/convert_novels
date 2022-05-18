@@ -2,13 +2,19 @@ from unittest import TestCase, skip
 
 import lxml.etree as ET
 
-from dialects.html.hub18cfrench import Hub18CFrenchDialect
+from dialects.html.hub18cfrench import Hub18CFrenchDialectBase
+from dialects.html.hub18cfrench import Hub18CFrenchDialectA
+from dialects.html.hub18cfrench import Hub18CFrenchDialectB
+from dialects.html.hub18cfrench import Hub18CFrenchDialectC
 
 
 class Hub18CFrenchDialectTests(TestCase):
 
     def setUp(self) -> None:
-        self.d = Hub18CFrenchDialect()
+        self.base = Hub18CFrenchDialectBase()
+        self.da = Hub18CFrenchDialectA()
+        self.db = Hub18CFrenchDialectB()
+        self.dc = Hub18CFrenchDialectC()
 
 
     def test_build_chapter_xml(self):
@@ -18,7 +24,7 @@ class Hub18CFrenchDialectTests(TestCase):
 <i>Réparation des torts</i>.</b>
 <p>Text</p></div>'''
         html = ET.fromstring(text)
-        results = self.d.build_chapter_xml(html)
+        results = self.base.build_chapter_xml(html)
         results = ET.tostring(results, encoding='unicode').replace('\n', '')
         expected = ''.join([
             '<div type="chapter">',
@@ -33,7 +39,7 @@ class Hub18CFrenchDialectTests(TestCase):
     def test_clean_up_page_breaks(self):
         '''Ensure that page break markers get removed.'''
         text = '<p>some text<span id="bbl_41_00_3478_0435_k" n="32" class="xml-pb-image">--32--</span> some more.</p>'
-        results = self.d.clean_up(text)
+        results = self.base.clean_up(text)
         expected = '<p>some text some more.</p>'
         self.assertEqual(results, expected)
 
@@ -44,7 +50,7 @@ class Hub18CFrenchDialectTests(TestCase):
 data-ref="/scripts/get_notes.py?philo_id=517+2+1&amp;arg=&amp;sort_order=rowid&amp;target=n18"
 id="n18-link-back" class="note-ref" tabindex="0" data-toggle="popover" data-container="body"
 data-placement="right" data-trigger="focus" data-html="true" data-animation="true">*</span> more text.</p>'''
-        results = self.d.clean_up(text)
+        results = self.base.clean_up(text)
         expected = '<p>some text more text.</p>'
         self.assertEqual(results, expected)
     
@@ -52,7 +58,7 @@ data-placement="right" data-trigger="focus" data-html="true" data-animation="tru
     def test_clean_up_centered(self):
         '''Ensure that centered text is kept without special markup.'''
         text = '<p><span class="xml-center">Text</span></p>'
-        results = self.d.clean_up(text)
+        results = self.base.clean_up(text)
         expected = '<p>Text</p>'
         self.assertEqual(results, expected)
 
@@ -61,7 +67,7 @@ data-placement="right" data-trigger="focus" data-html="true" data-animation="tru
         '''Ensure that eltec-x compatible headings are generated.'''
         text = '<b class="headword">dummy<span class="xml-lb"/>title</b>'
         html = ET.fromstring(text)
-        results = self.d._replace_headings(html)
+        results = self.base._replace_headings(html)
         results = ET.tostring(results, encoding='unicode')
         expected = '<h1><b class="headword">dummy title</b></h1>'
         self.assertEqual(results, expected)
@@ -74,7 +80,7 @@ data-placement="right" data-trigger="focus" data-html="true" data-animation="tru
         DUC DE NORMANDIE.</b></div>
         '''
         html = ET.fromstring(text)
-        results = self.d.build_front_xml(html)
+        results = self.base.build_front_xml(html)
         results = ET.tostring(results, encoding="unicode")
         expected = '<front><div type="titlepage"><head><hi rend="bold">HISTOIRE DE ROBERT LE DIABLE; DUC DE NORMANDIE.</hi></head></div></front>'
         self.assertEqual(results, expected)

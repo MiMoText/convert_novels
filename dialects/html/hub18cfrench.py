@@ -47,7 +47,7 @@ class Hub18CFrenchDialectBase(HTMLBaseDialect):
             # as mere superficial artifacts of the printed editions. That is why we can not
             # use the lb tags inside the wrapping hi tags which markup the text highlights.
             head = titlepage.find('b')
-            if head:
+            if head is not None:
                 head = self._replace_headings(head)
             else:
                 head = ET.Element('p')

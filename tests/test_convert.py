@@ -13,10 +13,10 @@ class HTMLDialectTest(TestCase):
 
     def test_detect_hub18cfrench(self):
         '''Ensure that HTML sources from hub18cfrench are detected.'''
-        text = '''<div class="xml-div1">
+        text = '''<div class="xml-div0"><div class="xml-div1">
             <p>some content</p>
-        </div>'''
-        expected = SourceDialects['HUB18CFRENCH'].value
+        </div></div>'''
+        expected = SourceDialects['HUB18CFRENCH_A'].value
         results = determine_dialect(text)
         self.assertIsInstance(results, expected)
 
@@ -24,7 +24,9 @@ class HTMLDialectTest(TestCase):
         '''When enforcing usage of a dialect, make sure it is actually used.'''
         text = 'irrelevant dummy test text'
         ds = (
-            ('HUB18CFRENCH', SourceDialects['HUB18CFRENCH'].value),
+            ('HUB18CFRENCH_A', SourceDialects['HUB18CFRENCH_A'].value),
+            ('HUB18CFRENCH_B', SourceDialects['HUB18CFRENCH_B'].value),
+            ('HUB18CFRENCH_C', SourceDialects['HUB18CFRENCH_C'].value),
         )
         for forced, expected in ds:
             results = determine_dialect(text, forced)
